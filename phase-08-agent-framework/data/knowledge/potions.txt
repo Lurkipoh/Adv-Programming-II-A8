@@ -1,0 +1,19 @@
+Potions and Healing Items
+
+Healing Potions
+Healing potions are essential items for any adventurer. The standard healing potion restores 50 HP instantly when consumed. They are brewed by skilled alchemists using herbs from the northern forest and blessed spring water. The potions have a shelf life of approximately one year if stored in a cool, dark place. Gregor's shop sells them for 50 gold each, which is considered a fair price in the region.
+
+Greater Healing Potions
+Greater healing potions are more powerful variants that restore 100 HP. They require rarer ingredients including moonflower petals and phoenix feather essence. Due to the scarcity of ingredients, they cost 150 gold each and are not always in stock. Adventurers embarking on dangerous quests are advised to stock up when available.
+
+Mana Potions
+Mana potions restore magical energy, replenishing 30 MP when consumed. They are brewed using ground crystallized magic essence and purified water. The standard price is 40 gold. Mages and spellcasters find these essential for extended magical combat.
+
+Antidotes
+Antidotes cure poison and other toxic effects. They are made from rare herbs that grow only in specific locations. The price varies from 25 to 75 gold depending on the strength of the antidote. Common antidotes cure minor poisons, while greater antidotes can neutralize even deadly venoms.
+
+Potions of Strength
+These temporary enhancement potions boost physical strength for a short duration. They increase attack power by 20% for five minutes. Sold at 80 gold each, they are popular among warriors and fighters before major battles.
+
+Crafting Your Own Potions
+Adventurers with alchemical knowledge can craft their own potions. Basic ingredients can be gathered from the northern forest, while rare components must be purchased from specialty traders or found in dungeons. The apothecary guild offers training courses for aspiring alchemists.

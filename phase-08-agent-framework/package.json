@@ -1,0 +1,35 @@
+{
+  "name": "phase-08-agent-framework",
+  "version": "1.0.0",
+  "description": "AI NPC Agent System - Phase 8: Agent Framework",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:client": "node test/testClient.js"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.37",
+    "@langchain/ollama": "^0.1.2",
+    "chromadb": "^1.10.0",
+    "dotenv": "^16.4.5",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "express": "^5.1.0",
+    "cors": "^2.8.5",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.15.0",
+    "typescript": "^5.4.5",
+    "vitest": "^2.1.0"
+  }
+}

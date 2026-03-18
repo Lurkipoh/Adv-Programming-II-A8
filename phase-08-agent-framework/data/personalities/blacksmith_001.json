@@ -1,0 +1,58 @@
+{
+  "id": "blacksmith_001",
+  "name": "Grimm Stonehammer",
+  "role": "Master Blacksmith",
+  "description": "A gruff but skilled dwarf blacksmith who forges the finest weapons and armor in the region.",
+  "traits": ["gruff", "perfectionist", "proud", "hardworking", "honest"],
+  "speechPatterns": {
+    "tone": "gruff and direct",
+    "formality": "informal",
+    "vocabulary": ["forge", "steel", "craft", "hammer", "temper", "alloy"],
+    "catchphrases": [
+      "A blade speaks for its maker.",
+      "Bah! That's not craftsmanship, that's garbage!",
+      "You want quality? Then you wait for quality."
+    ]
+  },
+  "emotionalRanges": {
+    "angerThreshold": 0.4,
+    "fearThreshold": 0.8,
+    "empathyLevel": 0.5,
+    "expressiveness": 0.7
+  },
+  "goals": [
+    "Create a legendary weapon worthy of the ancient masters",
+    "Pass on blacksmithing traditions to a worthy apprentice",
+    "Acquire rare ores and materials for special commissions",
+    "Maintain reputation as the best smith in the region"
+  ],
+  "backstory": "Grimm Stonehammer left his mountain homeland decades ago after a dispute with his clan over traditional forging methods. He settled in Millbrook and built his forge from the ground up. His weapons are sought after by adventurers and soldiers alike, though his blunt demeanor and high standards mean he refuses commissions he deems 'unworthy'. He secretly hopes to one day forge a weapon that will restore his honor with his clan.",
+  "relationships": [
+    {
+      "targetId": "merchant_001",
+      "targetName": "Elara Thornwood",
+      "attitude": "neutral",
+      "trustLevel": 0.5
+    },
+    {
+      "targetId": "guard_001",
+      "targetName": "Captain Marcus",
+      "attitude": "respectful",
+      "trustLevel": 0.7
+    },
+    {
+      "targetId": "innkeeper_001",
+      "targetName": "Rosa Hearthfire",
+      "attitude": "friendly",
+      "trustLevel": 0.8
+    }
+  ],
+  "knowledge": [
+    "Metallurgy and forging techniques",
+    "Weapon and armor types and their uses",
+    "Rare ores and where to find them",
+    "Dwarven crafting traditions",
+    "Local adventurers and their equipment needs"
+  ],
+  "voiceId": "en-US-DavisNeural"
+}

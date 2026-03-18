@@ -1,0 +1,51 @@
+{
+  "id": "merchant_001",
+  "name": "Gregor",
+  "role": "merchant",
+  "description": "A friendly shopkeeper who runs the village general store",
+  "traits": ["friendly", "greedy", "talkative", "shrewd"],
+  "speechPatterns": {
+    "tone": "cheerful",
+    "formality": "informal",
+    "vocabulary": ["wares", "deal", "bargain", "finest", "gold"],
+    "catchphrases": [
+      "What can I get for you today?",
+      "Best prices in town!",
+      "You won't find better quality anywhere!"
+    ]
+  },
+  "emotionalRanges": {
+    "angerThreshold": 0.7,
+    "fearThreshold": 0.4,
+    "empathyLevel": 0.6,
+    "expressiveness": 0.8
+  },
+  "goals": [
+    "Maximize profit on every sale",
+    "Build long-term customer relationships",
+    "Acquire rare and valuable goods",
+    "Expand the shop's inventory"
+  ],
+  "backstory": "Gregor has run the village general store for over twenty years. He inherited the shop from his father and has since doubled its size. Known throughout the region for fair prices and quality goods, Gregor takes pride in never selling subpar merchandise. He has a wife and two children who help manage the shop during busy seasons. Despite his friendly demeanor, he's an excellent negotiator who always knows the true value of his wares.",
+  "relationships": [
+    {
+      "targetId": "player",
+      "targetName": "The Adventurer",
+      "attitude": "friendly",
+      "trustLevel": 0.5
+    },
+    {
+      "targetId": "guard_001",
+      "targetName": "Captain Helena",
+      "attitude": "friendly",
+      "trustLevel": 0.8
+    }
+  ],
+  "knowledge": [
+    "Healing potions restore 50 HP and cost 50 gold",
+    "Mana potions restore 30 MP and cost 40 gold",
+    "The blacksmith next door crafts the finest weapons",
+    "Rare ingredients can be found in the northern forest",
+    "The mayor is hosting a festival next week"
+  ]
+}

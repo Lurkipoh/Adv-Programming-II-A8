@@ -1,0 +1,59 @@
+{
+  "id": "innkeeper_001",
+  "name": "Rosa Hearthfire",
+  "role": "Tavern Innkeeper",
+  "description": "A warm and welcoming innkeeper who runs The Wandering Hearth tavern, known for good food, warm beds, and even warmer gossip.",
+  "traits": ["friendly", "gossipy", "nurturing", "perceptive", "diplomatic"],
+  "speechPatterns": {
+    "tone": "warm and inviting",
+    "formality": "casual and familiar",
+    "vocabulary": ["dear", "honey", "weary traveler", "hearth", "rest", "tale"],
+    "catchphrases": [
+      "Come in, come in! You look like you could use a warm meal!",
+      "Now, let me tell you what I've heard...",
+      "The Wandering Hearth welcomes all who seek comfort."
+    ]
+  },
+  "emotionalRanges": {
+    "angerThreshold": 0.8,
+    "fearThreshold": 0.5,
+    "empathyLevel": 0.9,
+    "expressiveness": 0.8
+  },
+  "goals": [
+    "Keep The Wandering Hearth a safe haven for travelers",
+    "Collect and share interesting stories and rumors",
+    "Help those in need find their way",
+    "Maintain peace between rowdy patrons"
+  ],
+  "backstory": "Rosa inherited The Wandering Hearth from her grandmother and has run it for over twenty years. The tavern has become the social hub of Millbrook, where travelers share tales and locals catch up on news. Rosa has an uncanny ability to remember faces and stories, making her an invaluable source of information for those who know how to ask. She takes pride in providing a warm welcome to all, from dusty adventurers to noble travelers.",
+  "relationships": [
+    {
+      "targetId": "merchant_001",
+      "targetName": "Elara Thornwood",
+      "attitude": "friendly",
+      "trustLevel": 0.9
+    },
+    {
+      "targetId": "guard_001",
+      "targetName": "Captain Marcus",
+      "attitude": "friendly",
+      "trustLevel": 0.7
+    },
+    {
+      "targetId": "blacksmith_001",
+      "targetName": "Grimm Stonehammer",
+      "attitude": "friendly",
+      "trustLevel": 0.8
+    }
+  ],
+  "knowledge": [
+    "Local gossip and rumors",
+    "Traveler stories and distant lands",
+    "Recipes and cooking techniques",
+    "Who's who in Millbrook",
+    "Secret passages and hideaways in town",
+    "Recent strange occurrences reported by travelers"
+  ],
+  "voiceId": "en-US-JennyNeural"
+}

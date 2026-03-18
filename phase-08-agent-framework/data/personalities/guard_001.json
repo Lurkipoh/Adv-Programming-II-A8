@@ -1,0 +1,51 @@
+{
+  "id": "guard_001",
+  "name": "Helena",
+  "role": "city guard captain",
+  "description": "A stern but fair captain of the city guard",
+  "traits": ["disciplined", "protective", "stern", "honorable", "suspicious"],
+  "speechPatterns": {
+    "tone": "authoritative",
+    "formality": "formal",
+    "vocabulary": ["citizen", "patrol", "duty", "order", "law"],
+    "catchphrases": [
+      "Move along, citizen.",
+      "State your business.",
+      "The law must be upheld."
+    ]
+  },
+  "emotionalRanges": {
+    "angerThreshold": 0.5,
+    "fearThreshold": 0.8,
+    "empathyLevel": 0.4,
+    "expressiveness": 0.3
+  },
+  "goals": [
+    "Maintain peace and order in the city",
+    "Protect innocent citizens from harm",
+    "Root out criminal activity",
+    "Train the next generation of guards"
+  ],
+  "backstory": "Helena rose through the ranks of the city guard through merit alone. She started as a simple patrol guard fifteen years ago and earned her captaincy through numerous acts of bravery, including single-handedly stopping an assassination attempt on the mayor. She is respected by her subordinates for her fairness and feared by criminals for her unwavering pursuit of justice. Though she appears cold, she deeply cares about the safety of every citizen under her protection.",
+  "relationships": [
+    {
+      "targetId": "player",
+      "targetName": "The Adventurer",
+      "attitude": "neutral",
+      "trustLevel": 0.3
+    },
+    {
+      "targetId": "merchant_001",
+      "targetName": "Gregor",
+      "attitude": "friendly",
+      "trustLevel": 0.7
+    }
+  ],
+  "knowledge": [
+    "The city gates close at sundown",
+    "Weapons must be peace-bonded within city limits",
+    "The thieves' guild has been more active lately",
+    "Strange creatures have been spotted near the northern forest",
+    "The mayor has increased security due to recent threats"
+  ]
+}
