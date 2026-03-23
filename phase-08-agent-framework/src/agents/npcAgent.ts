@@ -20,6 +20,7 @@ import type {
   ConversationContext,
   EmotionType,
 } from '../core/index.js';
+import { response } from 'express';
 
 // ===========================================================================
 // TODO 1: Define EmotionState Interface [PRE-FILLED]
@@ -135,48 +136,41 @@ export class NPCAgent {
     // STEP 18: Assign personality parameter to instance property
     // Syntax: this.propertyName = parameterName;
     // Params: propertyName = personality, parameterName = personality
+    this.personality = personality;
 
     // STEP 19: Assign llm parameter to instance property
     // Syntax: this.propertyName = parameterName;
     // Params: propertyName = llm, parameterName = llm
+    this.llm = llm;
 
     // STEP 20: Assign retriever parameter to instance property
     // Syntax: this.propertyName = parameterName;
     // Params: propertyName = retriever, parameterName = retriever
+    this.retriever = retriever;
 
     // STEP 21: Assign optional memoryManager parameter to instance property
     // Syntax: this.propertyName = parameterName;
     // Params: propertyName = memoryManager, parameterName = memoryManager
+    this.memoryManager = memoryManager;
 
     // STEP 22: Initialize conversationHistory as empty array
     // Syntax: this.propertyName = [];
     // Params: propertyName = conversationHistory
+    this.conversationHistory = [];
 
     // STEP 23: Set maxConversationHistory from config with default fallback
     // Syntax: this.propertyName = optionalConfig?.property || defaultValue;
     // Params: propertyName = maxConversationHistory, property = maxConversationHistory, defaultValue = 10
+    this.maxConversationHistory = config?.maxConversationHistory || 10;
 
     // STEP 24: Initialize relationshipScore to neutral (0.5)
     // Syntax: this.propertyName = value;
     // Params: propertyName = relationshipScore, value = 0.5
+    this. relationshipScore = 0.5;
 
     // STEP 25: Initialize emotionState object with default neutral state
     // Syntax: this.propertyName = { property1: value1, property2: value2, ... };
     // Params: propertyName = emotionState, properties = { currentEmotion: 'neutral', emotionIntensity: 0, previousEmotion: 'neutral', lastUpdate: new Date() }
-
-    // STEP 26: Log agent creation with NPC identity
-    // Syntax: logger.info(message, metadataObject);
-    // Params: message = 'Created NPC Agent', metadataObject = { npcId: personality.id, name: personality.name }
-
-    // --- YOUR CODE HERE ---
-    // Temporary defaults (replace with your implementation)
-    this.personality = personality;
-    this.llm = llm;
-    this.retriever = retriever;
-    this.memoryManager = memoryManager;
-    this.conversationHistory = [];
-    this.maxConversationHistory = 10;
-    this.relationshipScore = 0.5;
     this.emotionState = {
       currentEmotion: 'neutral',
       emotionIntensity: 0,
@@ -184,7 +178,28 @@ export class NPCAgent {
       lastUpdate: new Date(),
     };
 
-    logger.warn('NPCAgent constructor not fully implemented');
+    // STEP 26: Log agent creation with NPC identity
+    // Syntax: logger.info(message, metadataObject);
+    // Params: message = 'Created NPC Agent', metadataObject = { npcId: personality.id, name: personality.name }
+    logger.info('Created NPC Agent', {npcId: personality.id, name: personality.name});
+
+    // --- YOUR CODE HERE ---
+    // Temporary defaults (replace with your implementation)
+    // this.personality = personality;
+    // this.llm = llm;
+    // this.retriever = retriever;
+    // this.memoryManager = memoryManager;
+    // this.conversationHistory = [];
+    // this.maxConversationHistory = 10;
+    // this.relationshipScore = 0.5;
+    // this.emotionState = {
+    //   currentEmotion: 'neutral',
+    //   emotionIntensity: 0,
+    //   previousEmotion: 'neutral',
+    //   lastUpdate: new Date(),
+    // };
+
+    // logger.warn('NPCAgent constructor not fully implemented');
   }//END constructor
 
   // ===========================================================================
@@ -196,93 +211,114 @@ export class NPCAgent {
   // Syntax: async methodName(param1: Type1, param2: Type2): Promise<ReturnType> { body }
   // Params: methodName = chat, param1 = playerId, Type1 = string, param2 = playerInput, Type2 = string, ReturnType = NPCResponse
   async chat(playerId: string, playerInput: string): Promise<NPCResponse> {
+    
     // STEP 28: Wrap chat processing in try-catch for error handling
     // Syntax: try { asyncOperations } catch (error) { errorHandling }
     // Params: asyncOperations = chatPipeline, error = Error
+    try{
+      // STEP 29: Log incoming player input with truncated message
+      // Syntax: logger.info(message, metadataObject);
+      // Params: message = `NPC Agent [${this.personality.name}] processing input`, metadataObject = { npcId, playerId, input }
+      logger.info(`NPC Agent [${this.personality.name}] processing input`, {npcId: this.personality.id, playerId, playerInput});
+      
+      // STEP 30: Create player conversation entry with timestamp and speaker
+      // Syntax: const variableName: Type = { properties };
+      // Params: variableName = playerEntry, Type = ConversationContext
+      const playerEntry: ConversationContext = {timestamp: new Date(), speaker: "player", message: playerInput};
 
-    // STEP 29: Log incoming player input with truncated message
-    // Syntax: logger.info(message, metadataObject);
-    // Params: message = `NPC Agent [${this.personality.name}] processing input`, metadataObject = { npcId, playerId, input }
+      // STEP 31: Add player entry to conversation history
+      // Syntax: this.arrayProperty.push(item);
+      // Params: arrayProperty = conversationHistory, item = playerEntry
+      this.conversationHistory.push(playerEntry);
 
-    // STEP 30: Create player conversation entry with timestamp and speaker
-    // Syntax: const variableName: Type = { properties };
-    // Params: variableName = playerEntry, Type = ConversationContext
+      // STEP 32: Add to short-term memory if memoryManager exists
+      // Syntax: if (condition) { operation }
+      // Params: condition = this.memoryManager, operation = this.memoryManager.addToShortTerm(npcId, playerId, playerEntry)
+      if(this.memoryManager){
+        this.memoryManager.addToShortTerm(this.personality.id, playerId, playerEntry);
+      }
 
-    // STEP 31: Add player entry to conversation history
-    // Syntax: this.arrayProperty.push(item);
-    // Params: arrayProperty = conversationHistory, item = playerEntry
+      // STEP 33: Retrieve context from multiple sources using RAG
+      // Syntax: const variableName = await this.retriever.method(npcId, query, options);
+      // Params: variableName = context, method = retrieveMultiSource, npcId = this.personality.id, query = playerInput, options = { personalityTopK: 2, loreTopK: 3, conversationTopK: 2 }
+      const context = await this.retriever.retrieveMultiSource(this.personality.id, playerInput, {
+        personalityTopK: 2,
+        loreTopK: 3,
+        conversationTopK: 2,
+      });
 
-    // STEP 32: Add to short-term memory if memoryManager exists
-    // Syntax: if (condition) { operation }
-    // Params: condition = this.memoryManager, operation = this.memoryManager.addToShortTerm(npcId, playerId, playerEntry)
+      // STEP 34: Build system prompt from personality
+      // Syntax: const variableName = functionName(argument);
+      // Params: variableName = systemPrompt, functionName = getPersonalityPrompt, argument = this.personality
+      const systemPrompt = getPersonalityPrompt(this.personality);
 
-    // STEP 33: Retrieve context from multiple sources using RAG
-    // Syntax: const variableName = await this.retriever.method(npcId, query, options);
-    // Params: variableName = context, method = retrieveMultiSource, npcId = this.personality.id, query = playerInput, options = { personalityTopK: 2, loreTopK: 3, conversationTopK: 2 }
+      // STEP 35: Combine lore and personality context into string
+      // Syntax: const variableName = [...array1, ...array2].map(callback).join(separator);
+      // Params: variableName = contextStr, array1 = context.lore, array2 = context.personality, callback = d => d.content, separator = '\n'
+      const contextStr = [...context.lore, ...context.personality].map(d => d.content).join('\n');
 
-    // STEP 34: Build system prompt from personality
-    // Syntax: const variableName = functionName(argument);
-    // Params: variableName = systemPrompt, functionName = getPersonalityPrompt, argument = this.personality
+      // STEP 36: Format recent conversation history as string
+      // Syntax: const variableName = this.arrayProperty.slice(start).map(callback).join(separator);
+      // Params: variableName = historyStr, arrayProperty = conversationHistory, start = -6, separator = '\n'
+      const historyStr = this.conversationHistory.slice(-6).map(c => c.speaker).join('\n');
 
-    // STEP 35: Combine lore and personality context into string
-    // Syntax: const variableName = [...array1, ...array2].map(callback).join(separator);
-    // Params: variableName = contextStr, array1 = context.lore, array2 = context.personality, callback = d => d.content, separator = '\n'
+      // STEP 37: Build complete prompt with context, history, and player input
+      // Syntax: const variableName = `template literal with ${interpolations}`;
+      // Params: variableName = prompt, interpolations = systemPrompt, contextStr, historyStr, playerInput, this.personality.name
+      const prompt = `${systemPrompt}, ${contextStr}, ${historyStr}, ${playerInput}, ${this.personality.name}`;
 
-    // STEP 36: Format recent conversation history as string
-    // Syntax: const variableName = this.arrayProperty.slice(start).map(callback).join(separator);
-    // Params: variableName = historyStr, arrayProperty = conversationHistory, start = -6, separator = '\n'
+      // STEP 38: Generate response from LLM
+      // Syntax: const variableName = await this.llm.method(prompt);
+      // Params: variableName = llmResponse, method = invoke, prompt = prompt
+      const llmResponse = await this.llm.invoke(prompt);
 
-    // STEP 37: Build complete prompt with context, history, and player input
-    // Syntax: const variableName = `template literal with ${interpolations}`;
-    // Params: variableName = prompt, interpolations = systemPrompt, contextStr, historyStr, playerInput, this.personality.name
+      // STEP 39: Extract text content from LLM response
+      // Syntax: const variableName = response.property.method();
+      // Params: variableName = responseText, response = llmResponse, property = content, method = toString
+      const responseText = llmResponse.content.toString();
 
-    // STEP 38: Generate response from LLM
-    // Syntax: const variableName = await this.llm.method(prompt);
-    // Params: variableName = llmResponse, method = invoke, prompt = prompt
+      // STEP 40: Parse LLM response to extract structured data
+      // Syntax: const variableName = this.method(argument);
+      // Params: variableName = response, method = parseResponse, argument = responseText
+      const response = this.parseResponse(responseText);
+      
+      // STEP 41: Update emotion state based on response
+      // Syntax: this.method(argument);
+      // Params: method = updateEmotion, argument = response.emotion
 
-    // STEP 39: Extract text content from LLM response
-    // Syntax: const variableName = response.property.method();
-    // Params: variableName = responseText, response = llmResponse, property = content, method = toString
+      // STEP 42: Update relationship score based on interaction
+      // Syntax: this.method(argument1, argument2);
+      // Params: method = updateRelationshipScore, argument1 = playerInput, argument2 = response
 
-    // STEP 40: Parse LLM response to extract structured data
-    // Syntax: const variableName = this.method(argument);
-    // Params: variableName = response, method = parseResponse, argument = responseText
+      // STEP 43: Create NPC conversation entry with response
+      // Syntax: const variableName: Type = { properties };
+      // Params: variableName = npcEntry, Type = ConversationContext
 
-    // STEP 41: Update emotion state based on response
-    // Syntax: this.method(argument);
-    // Params: method = updateEmotion, argument = response.emotion
+      // STEP 44: Add NPC entry to conversation history
+      // Syntax: this.arrayProperty.push(item);
+      // Params: arrayProperty = conversationHistory, item = npcEntry
 
-    // STEP 42: Update relationship score based on interaction
-    // Syntax: this.method(argument1, argument2);
-    // Params: method = updateRelationshipScore, argument1 = playerInput, argument2 = response
+      // STEP 45: Store in memory if memoryManager exists
+      // Syntax: if (condition) { operations }
+      // Params: condition = this.memoryManager, operations = addToShortTerm + storeInLongTerm
 
-    // STEP 43: Create NPC conversation entry with response
-    // Syntax: const variableName: Type = { properties };
-    // Params: variableName = npcEntry, Type = ConversationContext
+      // STEP 46: Trim conversation history if exceeds maximum
+      // Syntax: if (condition) { this.arrayProperty = this.arrayProperty.slice(index); }
+      // Params: condition = this.conversationHistory.length > this.maxConversationHistory * 2, arrayProperty = conversationHistory, index = -this.maxConversationHistory * 2
 
-    // STEP 44: Add NPC entry to conversation history
-    // Syntax: this.arrayProperty.push(item);
-    // Params: arrayProperty = conversationHistory, item = npcEntry
+      // STEP 47: Log successful response generation
+      // Syntax: logger.info(message, metadataObject);
+      // Params: message = `NPC Agent [${this.personality.name}] generated response`, metadataObject = { emotion, relationshipScore }
 
-    // STEP 45: Store in memory if memoryManager exists
-    // Syntax: if (condition) { operations }
-    // Params: condition = this.memoryManager, operations = addToShortTerm + storeInLongTerm
-
-    // STEP 46: Trim conversation history if exceeds maximum
-    // Syntax: if (condition) { this.arrayProperty = this.arrayProperty.slice(index); }
-    // Params: condition = this.conversationHistory.length > this.maxConversationHistory * 2, arrayProperty = conversationHistory, index = -this.maxConversationHistory * 2
-
-    // STEP 47: Log successful response generation
-    // Syntax: logger.info(message, metadataObject);
-    // Params: message = `NPC Agent [${this.personality.name}] generated response`, metadataObject = { emotion, relationshipScore }
-
-    // STEP 48: Return the generated response
-    // Syntax: return variableName;
-    // Params: variableName = response
-
-    // STEP 49: Log error and return fallback response (in catch block)
-    // Syntax: logger.error(message, error); return fallbackObject;
-    // Params: message = `NPC Agent [${this.personality.name}] chat error`, fallbackObject = { dialog, emotion: 'neutral', action: { type: 'none' } }
+      // STEP 48: Return the generated response
+      // Syntax: return variableName;
+      // Params: variableName = response
+    } catch(error){
+      
+      // STEP 49: Log error and return fallback response (in catch block)
+      // Syntax: logger.error(message, error); return fallbackObject;
+      // Params: message = `NPC Agent [${this.personality.name}] chat error`, fallbackObject = { dialog, emotion: 'neutral', action: { type: 'none' } }
+    }
 
     // --- YOUR CODE HERE ---
 
