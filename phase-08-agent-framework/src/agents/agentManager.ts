@@ -83,36 +83,35 @@ export class AgentManager {
     // STEP 10: Initialize agents as empty Map
     // Syntax: this.propertyName = new Map();
     // Params: propertyName = agents
-
+    this.agents = new Map();
     // STEP 11: Assign llm parameter to instance property
     // Syntax: this.propertyName = parameterName;
     // Params: propertyName = llm, parameterName = llm
-
+    this.llm = llm;
     // STEP 12: Assign retriever parameter to instance property
     // Syntax: this.propertyName = parameterName;
     // Params: propertyName = retriever, parameterName = retriever
-
+    this.retriever = retriever;
     // STEP 13: Assign optional memoryManager parameter to instance property
     // Syntax: this.propertyName = parameterName;
     // Params: propertyName = memoryManager, parameterName = memoryManager
-
+    this.memoryManager = memoryManager;
     // STEP 14: Set maxConcurrentAgents from config with default fallback
     // Syntax: this.propertyName = optionalConfig?.property || defaultValue;
     // Params: propertyName = maxConcurrentAgents, property = maxConcurrentAgents, defaultValue = 50
-
+    this.maxConcurrentAgents = config?.maxConcurrentAgents || 50;
     // STEP 15: Log manager initialization
     // Syntax: logger.info(message, metadataObject);
     // Params: message = 'Initialized AgentManager', metadataObject = { maxConcurrentAgents }
-
+    logger.info('Initialized AgentManager', {maxConcurrentAgents: this.maxConcurrentAgents});
     // --- YOUR CODE HERE ---
     // Temporary defaults (replace with your implementation)
-    this.agents = new Map();
+    /* this.agents = new Map();
     this.llm = llm;
     this.retriever = retriever;
     this.memoryManager = memoryManager;
     this.maxConcurrentAgents = 50;
-
-    logger.warn('AgentManager constructor not fully implemented');
+    logger.warn('AgentManager constructor not fully implemented'); */
   }//END constructor
 
   // ===========================================================================
@@ -130,31 +129,37 @@ export class AgentManager {
     // STEP 17: Check if max agents limit reached, throw error if so
     // Syntax: if (condition) { throw new Error(message); }
     // Params: condition = this.agents.size >= this.maxConcurrentAgents, message = `Maximum concurrent agents (${this.maxConcurrentAgents}) reached`
-
+    if(this.agents.size >= this.maxConcurrentAgents){
+      throw new Error(`Maximum concurrent agents (${this.maxConcurrentAgents}) reached`);
+    }
     // STEP 18: Check if agent already exists, return existing if found
     // Syntax: if (condition) { logWarning; return existingAgent; }
     // Params: condition = this.agents.has(personality.id), existingAgent = this.agents.get(personality.id)!
-
+    if(this.agents.has(personality.id)){
+      logger.warn('logWarning!');
+      return this.agents.get(personality.id)!;
+    }
     // STEP 19: Create new agent using factory function
     // Syntax: const variableName = factoryFunction(arg1, arg2, arg3, arg4, arg5);
     // Params: variableName = agent, factoryFunction = createNPCAgent, arg1 = personality, arg2 = this.llm, arg3 = this.retriever, arg4 = this.memoryManager, arg5 = config
-
+    const agent = createNPCAgent(personality, this.llm, this.retriever, this.memoryManager, config);
     // STEP 20: Add agent to agents Map
     // Syntax: this.mapProperty.set(key, value);
     // Params: mapProperty = agents, key = personality.id, value = agent
-
+    this.agents.set(personality.id, agent);
     // STEP 21: Log agent creation
     // Syntax: logger.info(message);
     // Params: message = `Created NPC Agent: ${personality.name} (${personality.id})`
-
+    logger.info(`Created NPC Agent: ${personality.name} (${personality.id})`);
     // STEP 22: Return the created agent
     // Syntax: return variableName;
     // Params: variableName = agent
-
+    return agent;
+    
     // --- YOUR CODE HERE ---
+    /* logger.warn('createAgent not implemented');
+    return createNPCAgent(personality, this.llm, this.retriever, this.memoryManager, config); */
 
-    logger.warn('createAgent not implemented');
-    return createNPCAgent(personality, this.llm, this.retriever, this.memoryManager, config);
   }//END createAgent method
 
   // ===========================================================================
@@ -169,11 +174,12 @@ export class AgentManager {
     // STEP 24: Return agent from Map or undefined if not found
     // Syntax: return this.mapProperty.get(key);
     // Params: mapProperty = agents, key = npcId
+    return this.agents.get(npcId);
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('getAgent not implemented');
-    return undefined;
+    //logger.warn('getAgent not implemented');
+    //return undefined;
+  
   }//END getAgent method
 
   // ===========================================================================
@@ -188,11 +194,12 @@ export class AgentManager {
     // STEP 26: Convert Map values to array
     // Syntax: return Array.from(this.mapProperty.values());
     // Params: mapProperty = agents
+    return Array.from(this.agents.values());
 
     // --- YOUR CODE HERE ---
+    //logger.warn('getAllAgents not implemented');
+    //return [];
 
-    logger.warn('getAllAgents not implemented');
-    return [];
   }//END getAllAgents method
 
   // ===========================================================================
@@ -207,11 +214,12 @@ export class AgentManager {
     // STEP 28: Return whether Map contains the agent ID
     // Syntax: return this.mapProperty.has(key);
     // Params: mapProperty = agents, key = npcId
+    return this.agents.has(npcId);
 
     // --- YOUR CODE HERE ---
+    //logger.warn('hasAgent not implemented');
+    //return false;
 
-    logger.warn('hasAgent not implemented');
-    return false;
   }//END hasAgent method
 
   // ===========================================================================
@@ -226,19 +234,24 @@ export class AgentManager {
     // STEP 30: Delete agent from Map and store result
     // Syntax: const variableName = this.mapProperty.delete(key);
     // Params: variableName = removed, mapProperty = agents, key = npcId
+    const removed = this.agents.delete(npcId);
 
     // STEP 31: Log removal if agent was found and removed
     // Syntax: if (condition) { logger.info(message); }
     // Params: condition = removed, message = `Removed NPC Agent: ${npcId}`
+    if(removed){
+      logger.info(`Removed NPC Agent: ${npcId}`);
+    }
 
     // STEP 32: Return whether removal was successful
     // Syntax: return variableName;
     // Params: variableName = removed
+    return removed;
 
     // --- YOUR CODE HERE ---
+    //logger.warn('removeAgent not implemented');
+    //return false;
 
-    logger.warn('removeAgent not implemented');
-    return false;
   }//END removeAgent method
 
   // ===========================================================================
@@ -253,18 +266,21 @@ export class AgentManager {
     // STEP 34: Store count before clearing for logging
     // Syntax: const variableName = this.mapProperty.size;
     // Params: variableName = count, mapProperty = agents
+    const count = this.agents.size;
 
     // STEP 35: Clear the agents Map
     // Syntax: this.mapProperty.clear();
     // Params: mapProperty = agents
+    this.agents.clear();
 
     // STEP 36: Log number of agents cleared
     // Syntax: logger.info(message);
     // Params: message = `Cleared all agents (${count} removed)`
+    logger.info(`Cleared all agents (${count} removed)`);
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('clearAllAgents not implemented');
+    // logger.warn('clearAllAgents not implemented');
+  
   }//END clearAllAgents method
 
   // ===========================================================================
@@ -283,31 +299,42 @@ export class AgentManager {
     // STEP 38: Get agent by NPC ID
     // Syntax: const variableName = this.mapProperty.get(key);
     // Params: variableName = agent, mapProperty = agents, key = npcId
+    const agent = this.agents.get(npcId);
 
     // STEP 39: Check if agent exists, log error and return null if not
     // Syntax: if (!condition) { logger.error(message); return null; }
     // Params: condition = agent, message = `Agent not found: ${npcId}`
+    if(!agent){
+      logger.error(`Agent not found: ${npcId}`);
+      return null;
+    }
 
     // STEP 40: Wrap chat operation in try-catch for error handling
     // Syntax: try { asyncOperation } catch (error) { errorHandling }
     // Params: asyncOperation = agent.chat(playerId, message), error = Error
+    try{
+      // STEP 41: Call agent's chat method with player info
+      // Syntax: const variableName = await agent.method(arg1, arg2);
+      // Params: variableName = response, method = chat, arg1 = playerId, arg2 = message
+      const response = await agent.chat(playerId, message);
 
-    // STEP 41: Call agent's chat method with player info
-    // Syntax: const variableName = await agent.method(arg1, arg2);
-    // Params: variableName = response, method = chat, arg1 = playerId, arg2 = message
+      // STEP 42: Return the response
+      // Syntax: return variableName;
+      // Params: variableName = response
+      return response;
 
-    // STEP 42: Return the response
-    // Syntax: return variableName;
-    // Params: variableName = response
-
-    // STEP 43: Log error and return null on failure (in catch block)
-    // Syntax: logger.error(message, error); return null;
-    // Params: message = `Error processing player input for ${npcId}`
+    } catch(error){
+      // STEP 43: Log error and return null on failure (in catch block)
+      // Syntax: logger.error(message, error); return null;
+      // Params: message = `Error processing player input for ${npcId}`
+      logger.error(`Error processing player input for ${npcId}`, error);
+      return null;
+    }
 
     // --- YOUR CODE HERE ---
+    //logger.warn('processPlayerInput not implemented');
+    //return null;
 
-    logger.warn('processPlayerInput not implemented');
-    return null;
   }//END processPlayerInput method
 
   // ===========================================================================
@@ -322,23 +349,29 @@ export class AgentManager {
     // STEP 45: Get agent by NPC ID
     // Syntax: const variableName = this.mapProperty.get(key);
     // Params: variableName = agent, mapProperty = agents, key = npcId
+    const agent = this.agents.get(npcId);
 
     // STEP 46: Return false if agent not found
     // Syntax: if (!condition) return false;
     // Params: condition = agent
+    if(!agent){
+      return false;
+    }
 
     // STEP 47: Call agent's resetConversation method
     // Syntax: agent.method();
     // Params: method = resetConversation
+    agent.resetConversation();
 
     // STEP 48: Return true for successful reset
     // Syntax: return true;
     // Params: returnValue = true
+    return true;
 
     // --- YOUR CODE HERE ---
+    //logger.warn('resetAgentConversation not implemented');
+    //return false;
 
-    logger.warn('resetAgentConversation not implemented');
-    return false;
   }//END resetAgentConversation method
 
   // ===========================================================================
@@ -353,15 +386,20 @@ export class AgentManager {
     // STEP 50: Return object with manager statistics
     // Syntax: return { property1: value1, property2: value2, ... };
     // Params: property1 = activeAgents, property2 = maxConcurrentAgents, property3 = agentIds
+    return {
+      activeAgents: this.agents.size,
+      maxConcurrentAgents: this.maxConcurrentAgents,
+      agentIds: Array.from(this.agents.keys()),
+    }
 
     // --- YOUR CODE HERE ---
+    //logger.warn('getStats not implemented');
+    //return {
+      //activeAgents: 0,
+      //maxConcurrentAgents: this.maxConcurrentAgents,
+     // agentIds: [] as string[],
+    //};
 
-    logger.warn('getStats not implemented');
-    return {
-      activeAgents: 0,
-      maxConcurrentAgents: this.maxConcurrentAgents,
-      agentIds: [] as string[],
-    };
   }//END getStats method
 
   // ===========================================================================
@@ -376,11 +414,13 @@ export class AgentManager {
     // STEP 52: Get agent and return its state or null
     // Syntax: const agent = this.mapProperty.get(key); return agent ? agent.method() : null;
     // Params: mapProperty = agents, key = npcId, method = getState
+    const agent = this.agents.get(npcId);
+    return agent ? agent.getState() : null;
 
     // --- YOUR CODE HERE ---
+    //logger.warn('getAgentState not implemented');
+    //return null;
 
-    logger.warn('getAgentState not implemented');
-    return null;
   }//END getAgentState method
 
   // ===========================================================================
@@ -395,11 +435,12 @@ export class AgentManager {
     // STEP 54: Map all agents to their states
     // Syntax: return Array.from(this.mapProperty.values()).map(item => item.method());
     // Params: mapProperty = agents, item = agent, method = getState
+    return Array.from(this.agents.values()).map(item => item.getState());
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('getAllAgentStates not implemented');
-    return [];
+    //logger.warn('getAllAgentStates not implemented');
+    //return [];
+    
   }//END getAllAgentStates method
 }//END AgentManager class
 
