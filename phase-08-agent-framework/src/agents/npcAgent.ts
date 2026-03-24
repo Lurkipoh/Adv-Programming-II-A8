@@ -285,49 +285,70 @@ export class NPCAgent {
       // STEP 41: Update emotion state based on response
       // Syntax: this.method(argument);
       // Params: method = updateEmotion, argument = response.emotion
+      this.updateEmotion(response.emotion);
 
       // STEP 42: Update relationship score based on interaction
       // Syntax: this.method(argument1, argument2);
       // Params: method = updateRelationshipScore, argument1 = playerInput, argument2 = response
+      this.updateRelationshipScore(playerInput, response);
 
       // STEP 43: Create NPC conversation entry with response
       // Syntax: const variableName: Type = { properties };
       // Params: variableName = npcEntry, Type = ConversationContext
+      const npcEntry: ConversationContext = {
 
+        timestamp: new Date(),
+        speaker: "npc",
+        message: response.dialog,
+        emotion: response.emotion,
+      }
       // STEP 44: Add NPC entry to conversation history
       // Syntax: this.arrayProperty.push(item);
       // Params: arrayProperty = conversationHistory, item = npcEntry
+      this.conversationHistory.push(npcEntry);
 
       // STEP 45: Store in memory if memoryManager exists
       // Syntax: if (condition) { operations }
       // Params: condition = this.memoryManager, operations = addToShortTerm + storeInLongTerm
+      if(this.memoryManager){
+        this.memoryManager.addToShortTerm(this.personality.id, playerId, npcEntry);
+      }
 
       // STEP 46: Trim conversation history if exceeds maximum
       // Syntax: if (condition) { this.arrayProperty = this.arrayProperty.slice(index); }
       // Params: condition = this.conversationHistory.length > this.maxConversationHistory * 2, arrayProperty = conversationHistory, index = -this.maxConversationHistory * 2
+      if(this.conversationHistory.length > this.maxConversationHistory * 2){
+        this.conversationHistory = this.conversationHistory.slice(-this.conversationHistory * 2);
+      }
 
       // STEP 47: Log successful response generation
       // Syntax: logger.info(message, metadataObject);
       // Params: message = `NPC Agent [${this.personality.name}] generated response`, metadataObject = { emotion, relationshipScore }
+      logger.info(`NPC Agent [${this.personality.name}] generated response`, {emotion: response.emotion, relationshipScore: this.relationshipScore.toFixed(2)});
 
       // STEP 48: Return the generated response
       // Syntax: return variableName;
       // Params: variableName = response
+      return response;
+
     } catch(error){
       
       // STEP 49: Log error and return fallback response (in catch block)
       // Syntax: logger.error(message, error); return fallbackObject;
       // Params: message = `NPC Agent [${this.personality.name}] chat error`, fallbackObject = { dialog, emotion: 'neutral', action: { type: 'none' } }
+      logger.error(`NPC Agent [${this.personality.name}] chat error`, error);
+
+      return {dialog: 'Can you repeat that?', emotion: 'neutral', action: {type: 'none'}};
     }
 
     // --- YOUR CODE HERE ---
-
+/* 
     logger.warn('chat method not implemented');
     return {
       dialog: 'Chat not implemented - complete the TODOs',
       emotion: 'neutral',
       action: { type: 'none' },
-    };
+    }; */
   }//END chat method
 
   // ===========================================================================
@@ -342,35 +363,55 @@ export class NPCAgent {
     // STEP 51: Wrap JSON parsing in try-catch
     // Syntax: try { parsing } catch { fallback }
     // Params: parsing = extractAndParseJSON, fallback = fallThroughToDefault
+    try{
+      
+      // STEP 52: Extract JSON object from response using regex
+      // Syntax: const variableName = string.match(regexPattern);
+      // Params: variableName = jsonMatch, string = responseText, regexPattern = /\{[\s\S]*\}/
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 
-    // STEP 52: Extract JSON object from response using regex
-    // Syntax: const variableName = string.match(regexPattern);
-    // Params: variableName = jsonMatch, string = responseText, regexPattern = /\{[\s\S]*\}/
+      // STEP 53: Parse JSON if match found
+      // Syntax: if (condition) { parseAndReturn }
+      // Params: condition = jsonMatch
+      if(jsonMatch)
+      {
+        // STEP 54: Parse JSON string to object
+        // Syntax: const variableName = JSON.parse(string);
+        // Params: variableName = parsed, string = jsonMatch[0]
+        const parsed = JSON.parse(jsonMatch[0]);
 
-    // STEP 53: Parse JSON if match found
-    // Syntax: if (condition) { parseAndReturn }
-    // Params: condition = jsonMatch
+        // STEP 55: Return structured response with parsed or default values
+        // Syntax: return { property1: parsed.prop1 || default1, ... };
+        // Params: property1 = dialog, property2 = emotion, property3 = action
+        return {
+          dialog: parsed.dialog || responseText, 
+          emotion: parsed.emotion || 'neutral', 
+          action: parsed.action || {type: 'none'}
+        };
+      }
 
-    // STEP 54: Parse JSON string to object
-    // Syntax: const variableName = JSON.parse(string);
-    // Params: variableName = parsed, string = jsonMatch[0]
-
-    // STEP 55: Return structured response with parsed or default values
-    // Syntax: return { property1: parsed.prop1 || default1, ... };
-    // Params: property1 = dialog, property2 = emotion, property3 = action
+    } catch{
+      
+    }
 
     // STEP 56: Return fallback response using raw text
     // Syntax: return { properties };
     // Params: properties = { dialog: responseText.trim(), emotion: 'neutral', action: { type: 'none' } }
+      return {
+      dialog: responseText.trim(),
+      emotion: 'neutral',
+      action: {type: 'none'},
+    };
+    
 
     // --- YOUR CODE HERE ---
 
-    logger.warn('parseResponse not implemented');
+/*     logger.warn('parseResponse not implemented');
     return {
       dialog: responseText,
       emotion: 'neutral',
       action: { type: 'none' },
-    };
+    }; */
   }//END parseResponse method
 
   // ===========================================================================
@@ -385,26 +426,40 @@ export class NPCAgent {
     // STEP 58: Store current emotion as previous emotion
     // Syntax: this.objectProperty.property = this.objectProperty.property;
     // Params: objectProperty = emotionState, property = previousEmotion, sourceProperty = currentEmotion
+    this.emotionState.previousEmotion = this.emotionState.currentEmotion;
 
     // STEP 59: Update current emotion to new value
     // Syntax: this.objectProperty.property = newValue;
     // Params: objectProperty = emotionState, property = currentEmotion, newValue = newEmotion
+    this.emotionState.currentEmotion = newEmotion;
 
     // STEP 60: Update lastUpdate timestamp
     // Syntax: this.objectProperty.property = new Date();
     // Params: objectProperty = emotionState, property = lastUpdate
+    this.emotionState.lastUpdate = new Date();
 
     // STEP 61: Define intensity mapping for each emotion type
     // Syntax: const variableName: Record<KeyType, ValueType> = { mappings };
     // Params: variableName = intensityMap, KeyType = EmotionType, ValueType = number
+    const intensityMap: Record<EmotionType, number> = {
+      neutral: 0,
+      happy: 0.6,
+      sad: 0.5,
+      angry: 0.8,
+      fearful: 0.7,
+      surprised: 0.6,
+      disgusted: 0.5,
+      curious: 0.4,
+      excited: 0.8,
+    };
 
     // STEP 62: Set emotion intensity based on mapping with fallback
     // Syntax: this.objectProperty.property = mapping[key] || defaultValue;
     // Params: objectProperty = emotionState, property = emotionIntensity, mapping = intensityMap, key = newEmotion, defaultValue = 0
-
+    this.emotionState.emotionIntensity = intensityMap[newEmotion] || 0;
+    
     // --- YOUR CODE HERE ---
-
-    logger.warn('updateEmotion not implemented');
+    //logger.warn('updateEmotion not implemented');
   }//END updateEmotion method
 
   // ===========================================================================
@@ -419,38 +474,70 @@ export class NPCAgent {
     // STEP 64: Convert input to lowercase for keyword matching
     // Syntax: const variableName = string.toLowerCase();
     // Params: variableName = input, string = playerInput
+    const input = playerInput.toLowerCase();
 
     // STEP 65: Initialize delta for score change
     // Syntax: let variableName = initialValue;
     // Params: variableName = delta, initialValue = 0
+    let delta = 0;
 
     // STEP 66: Define positive keywords array
     // Syntax: const variableName = [values];
     // Params: variableName = positiveKeywords, values = 'thank', 'please', 'help', 'kind', 'appreciate'
+    const positiveKeywords = [
+      'thank',
+      'please',
+      'help',
+      'kind',
+      'appreciate',
+    ];
 
     // STEP 67: Check positive keywords and increment delta
     // Syntax: for (const item of array) { if (condition) operation }
     // Params: item = keyword, array = positiveKeywords, condition = input.includes(keyword), operation = delta += 0.05
+    for(const keyword in positiveKeywords){
+      if(input.includes(keyword)){
+        delta += 0.5;
+      }
+    }
 
     // STEP 68: Define negative keywords array
     // Syntax: const variableName = [values];
     // Params: variableName = negativeKeywords, values = 'stupid', 'idiot', 'hate', 'useless', 'annoying'
+    const negativeKeywords = [
+      'stupid',
+      'idiot',
+      'hate',
+      'useless',
+      'annoying',
+    ];
 
     // STEP 69: Check negative keywords and decrement delta
     // Syntax: for (const item of array) { if (condition) operation }
     // Params: item = keyword, array = negativeKeywords, condition = input.includes(keyword), operation = delta -= 0.1
+    for(const keyword of negativeKeywords){
+      if(input.includes(keyword)){
+        delta -= 0.1;
+      }
+    }
 
     // STEP 70: Adjust delta based on response emotion
     // Syntax: if (condition) { operation } else if (condition) { operation }
     // Params: condition1 = response.emotion === 'happy' || response.emotion === 'excited', operation1 = delta += 0.02, condition2 = response.emotion === 'angry' || response.emotion === 'disgusted', operation2 = delta -= 0.02
+    if(response.emotion === 'happy' || response.emotion === 'excited'){
+      delta += 0.02;
+    }
+    else if(response.emotion === 'angry' || response.emotion === 'disgusted'){
+      delta -= 0.02;
+    }
 
     // STEP 71: Apply delta with clamping to 0-1 range
     // Syntax: this.property = Math.max(min, Math.min(max, this.property + delta));
     // Params: property = relationshipScore, min = 0, max = 1, delta = delta
+    this.relationshipScore = Math.max(0, Math.min(1, this.relationshipScore + delta));
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('updateRelationshipScore not implemented');
+    //logger.warn('updateRelationshipScore not implemented');
   }//END updateRelationshipScore method
 
   // ===========================================================================
@@ -466,8 +553,7 @@ export class NPCAgent {
     // Params: propertyName = personality
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('getPersonality not implemented');
+    //logger.warn('getPersonality not implemented');
     return this.personality;
   }//END getPersonality method
 
@@ -480,9 +566,8 @@ export class NPCAgent {
     // Params: arrayProperty = conversationHistory
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('getConversationHistory not implemented');
-    return [];
+    //logger.warn('getConversationHistory not implemented');
+    return [...this.conversationHistory];
   }//END getConversationHistory method
 
   // STEP 76: Define getter method for current emotion
@@ -494,9 +579,8 @@ export class NPCAgent {
     // Params: objectProperty = emotionState, property = currentEmotion
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('getCurrentEmotion not implemented');
-    return 'neutral';
+    //logger.warn('getCurrentEmotion not implemented');
+    return this.emotionState.currentEmotion;
   }//END getCurrentEmotion method
 
   // STEP 78: Define getter method for emotion intensity
@@ -508,9 +592,8 @@ export class NPCAgent {
     // Params: objectProperty = emotionState, property = emotionIntensity
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('getEmotionIntensity not implemented');
-    return 0;
+    //logger.warn('getEmotionIntensity not implemented');
+    return this.emotionState.emotionIntensity;
   }//END getEmotionIntensity method
 
   // STEP 80: Define getter method for relationship score
@@ -523,8 +606,8 @@ export class NPCAgent {
 
     // --- YOUR CODE HERE ---
 
-    logger.warn('getRelationshipScore not implemented');
-    return 0.5;
+    //logger.warn('getRelationshipScore not implemented');
+    return this.relationshipScore;
   }//END getRelationshipScore method
 
   // ===========================================================================
@@ -539,18 +622,25 @@ export class NPCAgent {
     // STEP 83: Clear conversation history array
     // Syntax: this.arrayProperty = [];
     // Params: arrayProperty = conversationHistory
+    this.conversationHistory = [];
 
     // STEP 84: Reset emotion state to neutral defaults
     // Syntax: this.objectProperty = { defaultProperties };
     // Params: objectProperty = emotionState, defaultProperties = { currentEmotion: 'neutral', emotionIntensity: 0, previousEmotion: 'neutral', lastUpdate: new Date() }
+    this.emotionState = {
+      currentEmotion: 'neutral',
+      emotionIntensity: 0,
+      previousEmotion: 'neutral',
+      lastUpdate: new Date(),
+    };
 
     // STEP 85: Log conversation reset
     // Syntax: logger.info(message);
     // Params: message = `Conversation reset for NPC [${this.personality.name}]`
+    logger.info(`Conversation reset for NPC [${this.personality.name}]`);
 
     // --- YOUR CODE HERE ---
-
-    logger.warn('resetConversation not implemented');
+    //logger.warn('resetConversation not implemented');
   }//END resetConversation method
 
   // ===========================================================================
@@ -572,12 +662,13 @@ export class NPCAgent {
     return {
       npcId: this.personality.id,
       name: this.personality.name,
-      currentEmotion: 'neutral',
-      emotionIntensity: 0,
-      relationshipScore: 0.5,
-      conversationHistoryLength: 0,
-      lastInteraction: null,
+      currentEmotion: this.emotionState.currentEmotion,
+      emotionIntensity: this.emotionState.emotionIntensity,
+      relationshipScore: this.relationshipScore,
+      conversationHistoryLength: this.conversationHistory.length,
+      lastInteraction: this.conversationHistory[this.conversationHistory.length - 1]?.timestamp || null,
     };
+    
   }//END getState method
 }//END NPCAgent class
 
