@@ -12,6 +12,8 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import { createServer, Server as HTTPServer } from 'http';
 import { logger } from '../utils/logger.js';
 import { AgentManager } from '../agents/agentManager.js';
+import { response } from 'express';
+import { timeStamp } from 'console';
 
 /**
  * Configuration for the Socket server.
@@ -135,10 +137,24 @@ export class SocketServer {
       });
 
       // --- EXERCISE: Implement STEPs 1-6 below ---
-      logger.warn('handlePlayerInput not fully implemented - route through agentManager');
-      socket.emit('error', {
-        message: 'handlePlayerInput not implemented yet - complete the TODO in socketServer.ts',
-      });
+
+      // STEP 1
+      if(this.agentManager){
+        const response = this.agentManager.processPlayerInput(npcId, playerId, message);
+        
+        if(response){
+          socket.emit('npc_response', {npcId, playerId, response, timeStamp: new Date().toISOString(),});
+          logger.info('NPC response sent', { npcId, playerId, emotion: response.emotion, });
+        }
+      }
+      else{
+        socket.emit('error', 'Agent manager not configured');
+      }
+      
+      //logger.warn('handlePlayerInput not fully implemented - route through agentManager');
+      //socket.emit('error', {
+       // message: 'handlePlayerInput not implemented yet - complete the TODO in socketServer.ts',
+     // });
 
     } catch (error) {
       logger.error('Error processing player input', error);
