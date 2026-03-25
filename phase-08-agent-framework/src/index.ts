@@ -16,7 +16,7 @@ import { createEmbeddingGenerator } from './llms/embeddings.js';
 import { createChromaVectorStore } from './vectorstores/chroma.js';
 import { createKnowledgeRetriever } from './chains/retriever.js';
 import { createMemoryManager } from './memory/memoryManager.js';
-import { createAgentManager } from './agents/agentManager.js';
+import { AgentManager, createAgentManager } from './agents/agentManager.js';
 import { loadAllPersonalities } from './utils/personalityLoader.js';
 import { createSocketServer } from './server/socketServer.js';
 
@@ -70,6 +70,7 @@ async function main(): Promise<void> {
       port: serverConfig.socketIoPort,
       host: serverConfig.host,
       // --- EXERCISE: Add agentManager here (STEP 1) ---
+      agentManager,
       cors: {
         origin: '*',
         credentials: false,
